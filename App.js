@@ -1,31 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect, useReducer } from 'react';
+import { StyleSheet, Text, View, CheckBox } from 'react-native';
 
-const db = [
-	{ item: 'it1', done: false },
+const db_init = [
+	{ item: 'it1', done: true },
 	{ item: 'it2', done: false }
 ]
 
-
 export default function App() {
+	const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
+	const [db, setdb] = useState(db_init);
+
+	const doClick = (idx) => {
+		let temp = db
+		db[idx].done = !db[idx].done;
+		setdb(temp);
+		console.log(idx, db[idx]);
+		forceUpdate()
+	}
+
+
 	return (
 		<View style={styles.container}>
-			<Text style={styles.titleText}>hey</Text>
+			<Text style={styles.titleText}>Todo List</Text>
 
 			{db.map(
 				(i, idx) =>
 					<div key={idx}>
 						<Text style={styles.titleText}>{i.item}</Text>
 
-						{
-							i.done?
-							<Text style={styles.titleText}>done</Text>:
-							<Text style={styles.titleText}>active</Text>
 
-
-
-						}
+						<CheckBox value={i.done} onClick={() => doClick(idx)} style={styles.checkbox} />
 
 
 					</div>
@@ -45,4 +51,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
+
+
+
 });
